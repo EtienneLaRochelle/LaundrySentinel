@@ -74,3 +74,12 @@ graph TD
     SIG -- Junction --> RES
     RES -- Ground --> GROUND_LDR((GND))
     SIG -- "GPIO 34 (Analog)" --> ESP32
+```
+
+---
+
+## Libraries Used
+This project requires the following libraries (install via Arduino Library Manager):
+* **ESP32Encoder** by Kevin Harrington
+* **LCD_I2C** by BlackHack
+* **Discord_WebHook** (Download from GitHub)
