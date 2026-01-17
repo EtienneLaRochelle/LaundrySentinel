@@ -1,6 +1,5 @@
 /*
 * File: LaundryController.cpp
-* Description: Define the logic of the App
 */
 
 #include "LaundryController.h"
@@ -97,7 +96,6 @@ void LaundryController::handleButtonClick() {
         delay(50); // Debounce
         if (!digitalRead(BUTTON_PIN)) {
             // Intentional blocking delay to prevent button bouncing.
-            //Delay was used since this project is single-threaded
             while (!digitalRead(BUTTON_PIN)) { delay(10); }
 
             initialLightLevel = analogRead(LIGHT_SENSOR_PIN);
@@ -154,7 +152,6 @@ void LaundryController::sendDiscordNotification(String customMessage) {
     char message[DISCORD_MESSAGE_BUFFER_SIZE];
 
     // Format the message with Discord's specific mention syntax: <@USER_ID>
-    // This ensure the user receives only notifications targetting them if the group notifications are turned off
     snprintf(message, DISCORD_MESSAGE_BUFFER_SIZE, "<@%s> %s", users[currentPosition].discordId, customMessage.c_str());
 
     for (int attempt = 0; attempt < DISCORD_SEND_ATTEMPTS; attempt++) {
