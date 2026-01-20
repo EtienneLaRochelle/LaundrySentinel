@@ -1,5 +1,6 @@
 /*
 * File: LaundryController.h
+* Description: Lists the logic of the app
 */
 
 #ifndef LAUNDRY_CONTROLLER_H

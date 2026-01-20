@@ -1,5 +1,6 @@
 /*
 * File: LaundryController.cpp
+* Description: Defines the logic of the app
 */
 
 #include "LaundryController.h"
@@ -60,7 +61,7 @@ void LaundryController::setupHardware() {
     encoder.attachHalfQuad(ENCODER_DT_PIN, ENCODER_CLK_PIN);
     encoder.setCount(0);
     
-    lcd.begin(27, 26);
+    lcd.begin(LCD_SDA_PIN, LCD_SCL_PIN);
     lcd.backlight();
     updateLCDUser();
     
@@ -96,6 +97,7 @@ void LaundryController::handleButtonClick() {
         delay(50); // Debounce
         if (!digitalRead(BUTTON_PIN)) {
             // Intentional blocking delay to prevent button bouncing.
+            // Delay was used since this project is single-threaded
             while (!digitalRead(BUTTON_PIN)) { delay(10); }
 
             initialLightLevel = analogRead(LIGHT_SENSOR_PIN);
@@ -141,7 +143,7 @@ void LaundryController::checkLaundryStatus() {
 
 void LaundryController::detectWashFinished() {
     // Check if light increased by 70% (Threshold calibrated experimentally)
-    if (initialLightLevel >= 0.0f && analogRead(LIGHT_SENSOR_PIN) >= initialLightLevel * 1.7f && !isWashFinished) {
+    if (initialLightLevel >= 0.0f && analogRead(LIGHT_SENSOR_PIN) >= initialLightLevel * LIGHT_THRESHOLD && !isWashFinished) {
         printLCD(1, "Finished");
         sendDiscordNotification("Cycle finished");
         isWashFinished = true;
@@ -152,6 +154,7 @@ void LaundryController::sendDiscordNotification(String customMessage) {
     char message[DISCORD_MESSAGE_BUFFER_SIZE];
 
     // Format the message with Discord's specific mention syntax: <@USER_ID>
+    // This ensures the user receives only notifications targeting them if the group notifications are turned off
     snprintf(message, DISCORD_MESSAGE_BUFFER_SIZE, "<@%s> %s", users[currentPosition].discordId, customMessage.c_str());
 
     for (int attempt = 0; attempt < DISCORD_SEND_ATTEMPTS; attempt++) {
